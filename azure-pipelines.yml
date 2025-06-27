@@ -1,0 +1,292 @@
+trigger:
+  branches:
+    include:
+    - main
+    - develop
+  paths:
+    include:
+    - '**/*.ts'
+    - '**/*.js'
+    - '**/*.json'
+    - 'tests/**/*'
+
+pr:
+  branches:
+    include:
+    - main
+    - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  NODE_VERSION: '18'
+  CI: 'true'
+
+stages:
+- stage: Test
+  displayName: 'Run Playwright Tests'
+  jobs:
+  - job: TestChrome
+    displayName: 'Chrome Tests'
+    strategy:
+      parallel: 4
+      matrix:
+        shard1:
+          shardIndex: 1
+          shardTotal: 4
+        shard2:
+          shardIndex: 2
+          shardTotal: 4
+        shard3:
+          shardIndex: 3
+          shardTotal: 4
+        shard4:
+          shardIndex: 4
+          shardTotal: 4
+    
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(NODE_VERSION)
+      displayName: 'Install Node.js'
+    
+    - script: |
+        npm ci
+      displayName: 'Install dependencies'
+    
+    - script: |
+        npx playwright install --with-deps
+      displayName: 'Install Playwright browsers'
+    
+    - script: |
+        cp .env.example .env
+        echo "BASE_URL=$(BASE_URL)" >> .env
+        echo "SAUCE_USERNAME=$(SAUCE_USERNAME)" >> .env
+        echo "SAUCE_PASSWORD=$(SAUCE_PASSWORD)" >> .env
+        echo "SAUCE_LOCKED_USERNAME=$(SAUCE_LOCKED_USERNAME)" >> .env
+        echo "SAUCE_PROBLEM_USERNAME=$(SAUCE_PROBLEM_USERNAME)" >> .env
+        echo "SAUCE_PERFORMANCE_USERNAME=$(SAUCE_PERFORMANCE_USERNAME)" >> .env
+        echo "HEADLESS=true" >> .env
+        echo "NODE_ENV=ci" >> .env
+      displayName: 'Setup environment'
+      env:
+        BASE_URL: $(BASE_URL)
+        SAUCE_USERNAME: $(SAUCE_USERNAME)
+        SAUCE_PASSWORD: $(SAUCE_PASSWORD)
+        SAUCE_LOCKED_USERNAME: $(SAUCE_LOCKED_USERNAME)
+        SAUCE_PROBLEM_USERNAME: $(SAUCE_PROBLEM_USERNAME)
+        SAUCE_PERFORMANCE_USERNAME: $(SAUCE_PERFORMANCE_USERNAME)
+    
+    - script: |
+        npx playwright test --shard=$(shardIndex)/$(shardTotal) --project=chromium
+      displayName: 'Run Chrome tests'
+      env:
+        CI: $(CI)
+    
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'reports/current/junit.xml'
+        mergeTestResults: true
+        testRunTitle: 'Chrome Tests - Shard $(shardIndex)'
+      condition: always()
+      displayName: 'Publish test results'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: 'reports/current'
+        artifactName: 'chrome-test-results-shard$(shardIndex)'
+      condition: always()
+      displayName: 'Publish test artifacts'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: 'reports/current/html-report'
+        artifactName: 'chrome-html-report-shard$(shardIndex)'
+      condition: always()
+      displayName: 'Publish HTML report'
+
+  - job: TestFirefox
+    displayName: 'Firefox Tests'
+    dependsOn: []
+    
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(NODE_VERSION)
+      displayName: 'Install Node.js'
+    
+    - script: |
+        npm ci
+      displayName: 'Install dependencies'
+    
+    - script: |
+        npx playwright install --with-deps
+      displayName: 'Install Playwright browsers'
+    
+    - script: |
+        cp .env.example .env
+        echo "BASE_URL=$(BASE_URL)" >> .env
+        echo "SAUCE_USERNAME=$(SAUCE_USERNAME)" >> .env
+        echo "SAUCE_PASSWORD=$(SAUCE_PASSWORD)" >> .env
+        echo "SAUCE_LOCKED_USERNAME=$(SAUCE_LOCKED_USERNAME)" >> .env
+        echo "SAUCE_PROBLEM_USERNAME=$(SAUCE_PROBLEM_USERNAME)" >> .env
+        echo "SAUCE_PERFORMANCE_USERNAME=$(SAUCE_PERFORMANCE_USERNAME)" >> .env
+        echo "HEADLESS=true" >> .env
+        echo "NODE_ENV=ci" >> .env
+      displayName: 'Setup environment'
+      env:
+        BASE_URL: $(BASE_URL)
+        SAUCE_USERNAME: $(SAUCE_USERNAME)
+        SAUCE_PASSWORD: $(SAUCE_PASSWORD)
+        SAUCE_LOCKED_USERNAME: $(SAUCE_LOCKED_USERNAME)
+        SAUCE_PROBLEM_USERNAME: $(SAUCE_PROBLEM_USERNAME)
+        SAUCE_PERFORMANCE_USERNAME: $(SAUCE_PERFORMANCE_USERNAME)
+    
+    - script: |
+        npx playwright test --project=firefox
+      displayName: 'Run Firefox tests'
+      env:
+        CI: $(CI)
+    
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'reports/current/junit.xml'
+        mergeTestResults: true
+        testRunTitle: 'Firefox Tests'
+      condition: always()
+      displayName: 'Publish test results'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: 'reports/current'
+        artifactName: 'firefox-test-results'
+      condition: always()
+      displayName: 'Publish test artifacts'
+
+  - job: TestSafari
+    displayName: 'Safari Tests'
+    dependsOn: []
+    
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(NODE_VERSION)
+      displayName: 'Install Node.js'
+    
+    - script: |
+        npm ci
+      displayName: 'Install dependencies'
+    
+    - script: |
+        npx playwright install --with-deps
+      displayName: 'Install Playwright browsers'
+    
+    - script: |
+        cp .env.example .env
+        echo "BASE_URL=$(BASE_URL)" >> .env
+        echo "SAUCE_USERNAME=$(SAUCE_USERNAME)" >> .env
+        echo "SAUCE_PASSWORD=$(SAUCE_PASSWORD)" >> .env
+        echo "SAUCE_LOCKED_USERNAME=$(SAUCE_LOCKED_USERNAME)" >> .env
+        echo "SAUCE_PROBLEM_USERNAME=$(SAUCE_PROBLEM_USERNAME)" >> .env
+        echo "SAUCE_PERFORMANCE_USERNAME=$(SAUCE_PERFORMANCE_USERNAME)" >> .env
+        echo "HEADLESS=true" >> .env
+        echo "NODE_ENV=ci" >> .env
+      displayName: 'Setup environment'
+      env:
+        BASE_URL: $(BASE_URL)
+        SAUCE_USERNAME: $(SAUCE_USERNAME)
+        SAUCE_PASSWORD: $(SAUCE_PASSWORD)
+        SAUCE_LOCKED_USERNAME: $(SAUCE_LOCKED_USERNAME)
+        SAUCE_PROBLEM_USERNAME: $(SAUCE_PROBLEM_USERNAME)
+        SAUCE_PERFORMANCE_USERNAME: $(SAUCE_PERFORMANCE_USERNAME)
+    
+    - script: |
+        npx playwright test --project=webkit
+      displayName: 'Run Safari tests'
+      env:
+        CI: $(CI)
+    
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'reports/current/junit.xml'
+        mergeTestResults: true
+        testRunTitle: 'Safari Tests'
+      condition: always()
+      displayName: 'Publish test results'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: 'reports/current'
+        artifactName: 'safari-test-results'
+      condition: always()
+      displayName: 'Publish test artifacts'
+
+- stage: Report
+  displayName: 'Generate Reports'
+  dependsOn: Test
+  condition: always()
+  jobs:
+  - job: GenerateReports
+    displayName: 'Consolidate and Generate Reports'
+    
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(NODE_VERSION)
+      displayName: 'Install Node.js'
+    
+    - script: |
+        npm ci
+      displayName: 'Install dependencies'
+    
+    - download: current
+      artifact: chrome-test-results-shard1
+      displayName: 'Download Chrome test results'
+    
+    - download: current
+      artifact: chrome-test-results-shard2
+      displayName: 'Download Chrome test results shard 2'
+    
+    - download: current
+      artifact: chrome-test-results-shard3
+      displayName: 'Download Chrome test results shard 3'
+    
+    - download: current
+      artifact: chrome-test-results-shard4
+      displayName: 'Download Chrome test results shard 4'
+    
+    - download: current
+      artifact: firefox-test-results
+      displayName: 'Download Firefox test results'
+    
+    - download: current
+      artifact: safari-test-results
+      displayName: 'Download Safari test results'
+    
+    - script: |
+        # Merge all test results
+        mkdir -p reports/current
+        find . -name "*.json" -exec cp {} reports/current/ \;
+        find . -name "*.xml" -exec cp {} reports/current/ \;
+        find . -name "html-report" -exec cp -r {} reports/current/ \;
+      displayName: 'Merge test results'
+    
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'reports/current/junit.xml'
+        mergeTestResults: true
+        testRunTitle: 'All Browser Tests'
+      condition: always()
+      displayName: 'Publish consolidated test results'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: 'reports/current'
+        artifactName: 'consolidated-test-results'
+      condition: always()
+      displayName: 'Publish consolidated artifacts' 
