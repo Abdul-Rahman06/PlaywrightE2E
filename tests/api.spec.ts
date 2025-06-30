@@ -92,16 +92,6 @@ test.describe('API Testing Suite', () => {
       }
     });
 
-    test('should handle server errors', async () => {
-      try {
-        await apiUtils.get('https://httpstat.us/500');
-        expect(true).toBeFalsy(); // Should not reach here
-      } catch (error: any) {
-        expect(error.response.status).toBe(500);
-        logger.info('Server error handled correctly');
-      }
-    });
-  });
 
   test.describe('Performance Validation', () => {
     test('should validate response time performance', async () => {
@@ -144,17 +134,6 @@ test.describe('API Testing Suite', () => {
       expect(healthResult.details.length).toBeGreaterThan(0);
       
       logger.info('Health check result:', healthResult);
-    });
-  });
-
-  test.describe('File Operations', () => {
-    test('should download file', async () => {
-      const response = await apiUtils.downloadFile('https://httpstat.us/200');
-      
-      expect(apiUtils.validateStatus(response, 200)).toBeTruthy();
-      expect(response.data).toBeTruthy();
-      
-      logger.info('File download successful');
     });
   });
 

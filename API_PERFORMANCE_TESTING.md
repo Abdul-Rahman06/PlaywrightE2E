@@ -1,6 +1,4 @@
-# API & Performance Testing Guide
-
-This document provides comprehensive guidance on using the API and Performance testing capabilities in the Playwright TestNG Framework.
+# API & Performance Testinggg Guide.
 
 ## 🔌 API Testing
 
@@ -436,7 +434,3 @@ Test results are automatically included in the framework's comprehensive reporti
 - **JSON Reports**: Machine-readable test results
 - **JUnit Reports**: CI/CD integration compatible
 - **Performance Metrics**: Detailed performance statistics and trends
-
----
-
-For more information, refer to the main README.md file or contact the framework maintainer. 

@@ -34,7 +34,6 @@ export class ApiUtils {
     // Request interceptor for logging
     this.client.interceptors.request.use(
       (config) => {
-        // Add start time to track duration
         (config as any).startTime = Date.now();
         
         this.logger.info(`API Request: ${config.method?.toUpperCase()} ${config.url}`, {
