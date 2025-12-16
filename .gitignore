@@ -174,3 +174,6 @@ temp-reports/
 # Local configuration
 config/local.json
 config/dev.json 
+
+#Env files
+.env.example

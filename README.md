@@ -57,15 +57,15 @@ Playwright-frameworkJS/
 │   │   └── test-summary.json  # Test summary
 │   └── archive/               # Archived reports (last 10 runs)
 ├── scripts/                   # CI/CD scripts
-│   └── ci-setup.sh           # CI/CD setup script
+│   └── ci-setup.sh            # CI/CD setup script
 ├── .github/workflows/         # GitHub Actions
-│   └── playwright.yml        # GitHub Actions workflow
-├── Jenkinsfile               # Jenkins pipeline
-├── azure-pipelines.yml       # Azure DevOps pipeline
+│   └── playwright.yml         # GitHub Actions workflow
+├── Jenkinsfile                # Jenkins pipeline
+├── azure-pipelines.yml        # Azure DevOps pipeline
 ├── playwright.config.ts       # Playwright configuration
-├── tsconfig.json             # TypeScript configuration
-├── package.json              # Dependencies and scripts
-└── .env.example              # Environment variables template
+├── tsconfig.json              # TypeScript configuration
+├── package.json               # Dependencies and scripts
+└── .env                       # Local environment variables (not committed to git)
 ```
 
 ## 🛠️ Setup
@@ -94,10 +94,12 @@ Playwright-frameworkJS/
    ```
 
 4. **Configure environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+   - Create a new `.env` file in the project root (same folder as `package.json`).
+   - Copy the example configuration from the **Environment Variables** section below.
+   - Update the values (URLs, credentials, API keys, etc.) to match your environment.
+
+> **Note**: The `.env` file (and any `.env.*` variants) are intentionally ignored by git for security.  
+> You must create this file yourself when you first clone the project.
 
 ## 🧪 Running Tests
 
@@ -326,10 +328,10 @@ The framework includes a comprehensive reporting system with automatic archiving
 
 ### Environment Variables
 
-Create a `.env` file based on `.env.example`:
+Create a `.env` file in the project root with content similar to:
 
 ```env
-# SauceDemo Configuration
+## SauceDemo Configuration (required)
 BASE_URL=https://www.saucedemo.com/
 SAUCE_USERNAME=standard_user
 SAUCE_PASSWORD=secret_sauce
@@ -337,11 +339,34 @@ SAUCE_LOCKED_USERNAME=locked_out_user
 SAUCE_PROBLEM_USERNAME=problem_user
 SAUCE_PERFORMANCE_USERNAME=performance_glitch_user
 
-# Test Configuration
+## Application Configuration
 HEADLESS=true
 SLOW_MO=1000
+
+## Browser Configuration
+BROWSER=chromium
+VIEWPORT_WIDTH=1920
+VIEWPORT_HEIGHT=1080
+
+## Test Configuration
 RETRY_COUNT=2
 TIMEOUT=30000
+ACTION_TIMEOUT=10000
+
+## Reporting Configuration
+GENERATE_REPORT=true
+REPORT_PATH=./test-results
+
+## API Configuration (optional)
+API_BASE_URL=https://api.example.com
+API_KEY=your_api_key_here
+
+## Database Configuration (optional)
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=testdb
+DB_USER=testuser
+DB_PASSWORD=testpass
 ```
 
 ### CI/CD Environment Variables
