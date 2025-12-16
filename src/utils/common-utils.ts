@@ -92,19 +92,16 @@ export class CommonUtils {
     return await element.textContent() || '';
   }
 
-  /**
-   * Get attribute value of element
-   */
+  //Get attribute value of element
+
   async getAttribute(selector: string, attribute: string): Promise<string | null> {
     this.logger.logElementInteraction('getAttribute', selector, attribute);
     const element = await this.waitForElement(selector);
     return await element.getAttribute(attribute);
   }
 
-  /**
-   * Check if element is visible
-   */
-  async isElementVisible(selector: string): Promise<boolean> {
+  // Check if element is visible
+    async isElementVisible(selector: string): Promise<boolean> {
     this.logger.logElementInteraction('isElementVisible', selector);
     const element = this.page.locator(selector);
     return await element.isVisible();
@@ -197,20 +194,6 @@ export class CommonUtils {
     await element.waitFor({ state: 'hidden', timeout });
   }
 
-  /**
-   * Wait for element count to match
-   */
-  async waitForElementCount(selector: string, count: number, timeout: number = 10000): Promise<void> {
-    this.logger.logElementInteraction('waitForElementCount', selector, count.toString());
-    await this.page.waitForFunction(
-      (selector, expectedCount) => {
-        return document.querySelectorAll(selector).length === expectedCount;
-      },
-      selector,
-      count,
-      { timeout }
-    );
-  }
 
   /**
    * Wait for text to be present in element
@@ -218,7 +201,7 @@ export class CommonUtils {
   async waitForText(selector: string, text: string, timeout: number = 10000): Promise<void> {
     this.logger.logElementInteraction('waitForText', selector, text);
     const element = await this.waitForElement(selector);
-    await element.waitFor({ hasText: text, timeout });
+    await expect(element).toHaveText(text, { timeout });
   }
 
   /**

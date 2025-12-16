@@ -229,10 +229,6 @@ export class ApiUtils {
       return false;
     }
   }
-
-  /**
-   * Validate response time
-   */
   validateResponseTime(response: AxiosResponse, maxTime: number): boolean {
     const duration = this.requestHistory.find(
       req => req.url === response.config.url && req.timestamp.getTime() === Date.now()
@@ -249,9 +245,6 @@ export class ApiUtils {
     return isValid;
   }
 
-  /**
-   * Get request history
-   */
   getRequestHistory(): Array<{
     method: string;
     url: string;
@@ -262,17 +255,11 @@ export class ApiUtils {
     return [...this.requestHistory];
   }
 
-  /**
-   * Clear request history
-   */
   clearRequestHistory(): void {
     this.requestHistory = [];
     this.logger.info('Request history cleared');
   }
 
-  /**
-   * Get performance statistics
-   */
   getPerformanceStats(): {
     totalRequests: number;
     averageResponseTime: number;
@@ -298,9 +285,6 @@ export class ApiUtils {
     };
   }
 
-  /**
-   * Health check
-   */
   async healthCheck(endpoints: string[] = ['/health', '/status', '/ping']): Promise<{
     healthy: boolean;
     details: Array<{ endpoint: string; status: number; responseTime: number }>;

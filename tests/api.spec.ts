@@ -16,11 +16,10 @@ test.describe('API Testing Suite', () => {
     test('should successfully fetch inventory items', async () => {
       const response = await apiUtils.get('/');
       
-      // Validate status
       expect(apiUtils.validateStatus(response, 200)).toBeTruthy();
       expect(response.data).toBeTruthy();
       
-      // Validate response time
+  
       expect(apiUtils.validateResponseTime(response, 5000)).toBeTruthy();
     });
 
@@ -137,6 +136,7 @@ test.describe('API Testing Suite', () => {
     });
   });
 
+
   test.afterEach(async () => {
     // Clear request history after each test
     apiUtils.clearRequestHistory();
@@ -149,3 +149,4 @@ test.describe('API Testing Suite', () => {
     logger.info('Final API test performance stats:', finalStats);
   });
 }); 
+});

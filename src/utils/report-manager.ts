@@ -36,8 +36,9 @@ export class ReportManager {
 
   /**
    * Archive current reports and prepare for new test run
+   * Archives the entire current directory into archive/test-run-<name>-<timestamp>
    */
-  async archiveCurrentReports(): Promise<void> {
+  async archiveCurrentReports(testRunName: string = 'run'): Promise<void> {
     try {
       this.logger.info('Starting report archival process...');
       
@@ -48,23 +49,16 @@ export class ReportManager {
         if (files.length > 0) {
           // Create timestamp for archive folder
           const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-          const archiveFolder = path.join(this.archiveDir, `test-run-${timestamp}`);
+          const archiveFolder = path.join(this.archiveDir, `test-run-${testRunName}-${timestamp}`);
           
           // Create archive folder
           fs.mkdirSync(archiveFolder, { recursive: true });
           
-          // Move all files from current to archive
+          // Move all files and folders from current to archive
           files.forEach(file => {
             const sourcePath = path.join(this.currentReportDir, file);
             const destPath = path.join(archiveFolder, file);
-            
-            if (fs.statSync(sourcePath).isFile()) {
-              fs.copyFileSync(sourcePath, destPath);
-              fs.unlinkSync(sourcePath);
-            } else if (fs.statSync(sourcePath).isDirectory()) {
-              this.copyDirectoryRecursive(sourcePath, destPath);
-              fs.rmSync(sourcePath, { recursive: true, force: true });
-            }
+            fs.renameSync(sourcePath, destPath);
           });
           
           this.logger.info(`Reports archived to: ${archiveFolder}`);

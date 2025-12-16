@@ -5,7 +5,6 @@ export class LoginPage {
   private page: Page;
   private utils: CommonUtils;
 
-  // Locators
   private usernameInput = '#user-name';
   private passwordInput = '#password';
   private loginButton = '#login-button';
@@ -29,4 +28,4 @@ export class LoginPage {
   async getErrorMessage(): Promise<string> {
     return this.utils.getText(this.errorMessage);
   }
-} 
+}  

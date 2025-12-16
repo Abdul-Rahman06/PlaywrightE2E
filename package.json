@@ -1,7 +1,7 @@
 {
   "name": "playwright-testng-framework",
   "version": "1.0.0",
-  "description": "End-to-End test automation framework using Playwright with TestNG model",
+  "description": "End-to-End test automation framework using Playwright with TestNG ",
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
@@ -90,10 +90,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/playwright-testng-framework.git"
-  },
-  "bugs": {
-    "url": "https://github.com/your-username/playwright-testng-framework/issues"
-  },
-  "homepage": "https://github.com/your-username/playwright-testng-framework#readme"
-} 
+    "url": "https://github.com/Abdul-Rahman06/PlaywrightE2E"
+  }
+}

@@ -32,8 +32,8 @@ export default defineConfig({
     /* Take screenshot on failure */
     screenshot: 'only-on-failure',
     
-    /* Record video on failure */
-    video: 'retain-on-failure',
+    /* Record video for all tests */
+    video: 'on',
     
     /* Global timeout for each action */
     actionTimeout: 10000,
@@ -92,7 +92,7 @@ export default defineConfig({
   globalTeardown: require.resolve('./config/global-teardown.ts'),
 
   /* Output directory for test artifacts */
-  outputDir: './reports/current/test-results/',
+  outputDir: 'reports/current',
 
   /* Timeout for the entire test run */
   timeout: 60000,

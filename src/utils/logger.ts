@@ -1,17 +1,36 @@
 import winston from 'winston';
 import path from 'path';
+import fs from 'fs';
 
 /**
  * Custom Logger class using Winston
  * Provides structured logging for test automation framework
+ * Now supports per-test log files, only keeping logs for failed tests.
  */
 export class Logger {
   private logger: winston.Logger;
   private context: string;
+  private logFilePath: string | null = null;
+  private testTitle: string | null = null;
 
-  constructor(context: string = 'Default') {
+  constructor(context: string = 'Default', testTitle?: string) {
     this.context = context;
+    if (testTitle) {
+      this.testTitle = testTitle;
+      this.logFilePath = this.createTestLogFile(testTitle);
+    }
     this.logger = this.createLogger();
+  }
+
+  private createTestLogFile(testTitle: string): string {
+    const logsDir = path.join(process.cwd(), 'reports', 'current', 'logs');
+    if (!fs.existsSync(logsDir)) {
+      fs.mkdirSync(logsDir, { recursive: true });
+    }
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    // Sanitize test title for filename
+    const safeTitle = testTitle.replace(/[^a-zA-Z0-9-_]/g, '_').slice(0, 80);
+    return path.join(logsDir, `${safeTitle}_${timestamp}.log`);
   }
 
   private createLogger(): winston.Logger {
@@ -31,37 +50,25 @@ export class Logger {
       })
     );
 
-    // Create logs directory in reports/current
-    const logsDir = path.join(process.cwd(), 'reports', 'current', 'logs');
-    if (!require('fs').existsSync(logsDir)) {
-      require('fs').mkdirSync(logsDir, { recursive: true });
+    const transports: winston.transport[] = [
+      new winston.transports.Console({
+        format: consoleFormat,
+      })
+    ];
+
+    if (this.logFilePath) {
+      transports.push(
+        new winston.transports.File({
+          filename: this.logFilePath,
+          format: logFormat,
+        })
+      );
     }
 
     return winston.createLogger({
       level: process.env.LOG_LEVEL || 'info',
       format: logFormat,
-      transports: [
-        // Console transport
-        new winston.transports.Console({
-          format: consoleFormat,
-        }),
-        // File transport for all logs
-        new winston.transports.File({
-          filename: path.join(logsDir, 'combined.log'),
-          format: logFormat,
-        }),
-        // File transport for error logs
-        new winston.transports.File({
-          filename: path.join(logsDir, 'error.log'),
-          level: 'error',
-          format: logFormat,
-        }),
-        // File transport for test execution logs
-        new winston.transports.File({
-          filename: path.join(logsDir, 'test-execution.log'),
-          format: logFormat,
-        }),
-      ],
+      transports,
     });
   }
 
@@ -70,10 +77,10 @@ export class Logger {
   }
 
   error(message: string, error?: any): void {
-    this.logger.error(message, { 
-      context: this.context, 
+    this.logger.error(message, {
+      context: this.context,
       error: error?.message || error,
-      stack: error?.stack 
+      stack: error?.stack
     });
   }
 
@@ -117,5 +124,14 @@ export class Logger {
       passed,
       context: this.context
     });
+  }
+
+  /**
+   * Call this after each test to clean up log if test passed
+   */
+  cleanupLogIfPassed(passed: boolean): void {
+    if (passed && this.logFilePath && fs.existsSync(this.logFilePath)) {
+      fs.unlinkSync(this.logFilePath);
+    }
   }
 } 
