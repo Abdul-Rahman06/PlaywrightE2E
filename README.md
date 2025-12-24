@@ -22,7 +22,7 @@ Test Website used = https://www.saucedemo.com/
 ```
 Playwright-frameworkJS/
 ├── config/                     # Global setup/teardown
-│   ├── global-setup.ts        # Test suite setup
+│   ├── global-setup.ts        # Test suite setup (Removed - using Project Dependencies)
 │   └── global-teardown.ts     # Test suite cleanup
 ├── src/
 │   ├── pages/                 # Page Object Models
@@ -39,6 +39,7 @@ Playwright-frameworkJS/
 │   └── data/                  # Test data
 │       └── test-users.ts      # User credentials
 ├── tests/                     # Test files
+│   ├── auth.setup.ts          # Authentication setup (Storage State)
 │   ├── login.spec.ts          # Login tests
 │   ├── inventory.spec.ts      # Inventory tests
 │   ├── logout.spec.ts         # Logout tests
@@ -299,6 +300,31 @@ chmod +x scripts/ci-setup.sh
 # Run complete pipeline
 ./scripts/ci-setup.sh full
 ```
+
+## 🔐 Authentication Management
+
+The framework uses Playwright's **Global Setup** and **Storage State** to handle authentication efficiently.
+
+### How it Works
+1. **Auth Project**: A special `setup` project is defined in `playwright.config.ts`.
+2. **Setup Script**: `tests/auth.setup.ts` logs in via the UI and saves the browser state (cookies, local storage) to `auth.json`.
+3. **Reusability**: All other projects (chromium, firefox, etc.) reuse this `auth.json` file.
+4. **Auto-Login**: Tests don't need to log in repeatedly. They start in an authenticated state.
+
+### Configuration
+- **Setup File**: `tests/auth.setup.ts`
+- **Storage State File**: `auth.json` (auto-generated)
+- **Playwright Config**: 
+  ```typescript
+  projects: [
+    { name: 'setup', testMatch: /.*auth\.setup\.ts/ },
+    { 
+      name: 'chromium', 
+      use: { storageState: 'auth.json' }, 
+      dependencies: ['setup'] 
+    }
+  ]
+  ```
 
 ## 📊 Reporting System
 

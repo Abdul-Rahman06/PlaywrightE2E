@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { Logger } from './logger';
 
 /**
@@ -7,20 +6,30 @@ import { Logger } from './logger';
  */
 export class TestDataGenerator {
   private logger: Logger;
+  private _faker: any;
 
   constructor() {
     this.logger = new Logger('TestDataGenerator');
   }
 
+  private async getFaker() {
+    if (!this._faker) {
+      const fakerModule = await import('@faker-js/faker');
+      this._faker = fakerModule.faker;
+    }
+    return this._faker;
+  }
+
   /**
    * Generate user registration data
    */
-  generateUserData() {
+  async generateUserData() {
+    const faker = await this.getFaker();
     const userData = {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       email: faker.internet.email(),
-      phone: faker.phone.number('###-###-####'),
+      phone: faker.phone.number(),
       address: faker.location.streetAddress(),
       city: faker.location.city(),
       state: faker.location.state(),
@@ -28,7 +37,7 @@ export class TestDataGenerator {
       dateOfBirth: faker.date.past({ years: 25 }).toISOString().split('T')[0],
       password: faker.internet.password({ length: 12, pattern: /[A-Za-z0-9!@#$%^&*]/ }),
       confirmPassword: '',
-      username: faker.internet.userName(),
+      username: faker.internet.username(),
     };
 
     userData.confirmPassword = userData.password;
@@ -40,12 +49,13 @@ export class TestDataGenerator {
   /**
    * Generate form data for various forms
    */
-  generateFormData(formType: 'contact' | 'feedback' | 'survey' | 'application') {
+  async generateFormData(formType: 'contact' | 'feedback' | 'survey' | 'application') {
+    const faker = await this.getFaker();
     const baseData = {
       firstName: faker.person.firstName(),
       lastName: faker.person.lastName(),
       email: faker.internet.email(),
-      phone: faker.phone.number('###-###-####'),
+      phone: faker.phone.number(),
     };
 
     switch (formType) {
@@ -91,7 +101,8 @@ export class TestDataGenerator {
   /**
    * Generate product data
    */
-  generateProductData() {
+  async generateProductData() {
+    const faker = await this.getFaker();
     return {
       name: faker.commerce.productName(),
       description: faker.commerce.productDescription(),
@@ -108,12 +119,13 @@ export class TestDataGenerator {
   /**
    * Generate order data
    */
-  generateOrderData() {
+  async generateOrderData() {
+    const faker = await this.getFaker();
     return {
       orderNumber: faker.string.alphanumeric(10).toUpperCase(),
       customerName: faker.person.fullName(),
       email: faker.internet.email(),
-      phone: faker.phone.number('###-###-####'),
+      phone: faker.phone.number(),
       shippingAddress: {
         street: faker.location.streetAddress(),
         city: faker.location.city(),
@@ -141,7 +153,8 @@ export class TestDataGenerator {
   /**
    * Generate random text data
    */
-  generateTextData(type: 'paragraph' | 'sentence' | 'word' | 'title', count: number = 1) {
+  async generateTextData(type: 'paragraph' | 'sentence' | 'word' | 'title', count: number = 1) {
+    const faker = await this.getFaker();
     switch (type) {
       case 'paragraph':
         return faker.lorem.paragraphs(count);
@@ -159,7 +172,8 @@ export class TestDataGenerator {
   /**
    * Generate file data for upload tests
    */
-  generateFileData() {
+  async generateFileData() {
+    const faker = await this.getFaker();
     return {
       fileName: faker.system.fileName(),
       filePath: faker.system.filePath(),
@@ -177,7 +191,8 @@ export class TestDataGenerator {
   /**
    * Generate date data
    */
-  generateDateData() {
+  async generateDateData() {
+    const faker = await this.getFaker();
     return {
       past: faker.date.past(),
       future: faker.date.future(),
@@ -190,7 +205,8 @@ export class TestDataGenerator {
   /**
    * Generate location data
    */
-  generateLocationData() {
+  async generateLocationData() {
+    const faker = await this.getFaker();
     return {
       address: faker.location.streetAddress(),
       city: faker.location.city(),
@@ -207,7 +223,8 @@ export class TestDataGenerator {
   /**
    * Generate company data
    */
-  generateCompanyData() {
+  async generateCompanyData() {
+    const faker = await this.getFaker();
     return {
       name: faker.company.name(),
       catchPhrase: faker.company.catchPhrase(),
@@ -222,7 +239,8 @@ export class TestDataGenerator {
   /**
    * Generate random number within range
    */
-  generateNumber(min: number, max: number, decimals: number = 0) {
+  async generateNumber(min: number, max: number, decimals: number = 0) {
+    const faker = await this.getFaker();
     if (decimals === 0) {
       return faker.number.int({ min, max });
     }
@@ -232,21 +250,25 @@ export class TestDataGenerator {
   /**
    * Generate random boolean
    */
-  generateBoolean() {
+  async generateBoolean() {
+    const faker = await this.getFaker();
     return faker.datatype.boolean();
   }
 
   /**
    * Generate random array element
    */
-  generateArrayElement<T>(array: T[]): T {
+  async generateArrayElement<T>(array: T[]): Promise<T> {
+    const faker = await this.getFaker();
     return faker.helpers.arrayElement(array);
   }
 
   /**
    * Generate random array elements
    */
-  generateArrayElements<T>(array: T[], min: number = 1, max?: number): T[] {
-    return faker.helpers.arrayElements(array, { min, max });
+  async generateArrayElements<T>(array: T[], min: number = 1, max?: number): Promise<T[]> {
+    const faker = await this.getFaker();
+    const maxLimit = max !== undefined ? max : array.length;
+    return faker.helpers.arrayElements(array, { min, max: maxLimit });
   }
 } 

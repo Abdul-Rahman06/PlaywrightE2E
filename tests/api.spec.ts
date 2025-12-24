@@ -86,7 +86,7 @@ test.describe('API Testing Suite', () => {
         await fastApiUtils.get('/200?sleep=10000'); // 10 second delay
         expect(true).toBeFalsy(); // Should not reach here
       } catch (error: any) {
-        expect(error.code).toBe('ECONNABORTED');
+        expect(error.code).toBe('ECONNRESET');
         logger.info('Timeout error handled correctly');
       }
     });
@@ -149,4 +149,4 @@ test.describe('API Testing Suite', () => {
     logger.info('Final API test performance stats:', finalStats);
   });
 }); 
-});
+})

@@ -1,9 +1,11 @@
 import { expect, Page } from "@playwright/test";
 import { CommonUtils } from "../utils/common-utils";
+import { TestDataGenerator } from "../utils/test-data-generator";
 
 export class InventoryPage {
   private page: Page;
   public utils: CommonUtils;
+  private dataGen: TestDataGenerator;
 
   // Locators
   private inventoryContainer = ".inventory_list";
@@ -21,7 +23,7 @@ export class InventoryPage {
   private sortButton = ".product_sort_container";
 
   public checkout = "#checkout";
-  public firstName = "#first-name";
+  public FirstName = "#first-name";
   public lastName = "#last-name";
   public zipCode = "#postal-code";
   public continue = "#continue";
@@ -31,6 +33,11 @@ export class InventoryPage {
   constructor(page: Page) {
     this.page = page;
     this.utils = new CommonUtils(page);
+    this.dataGen = new TestDataGenerator();
+  }
+
+  async goToInventory() {
+    await this.page.goto('/inventory.html', { waitUntil: 'domcontentloaded' });
   }
 
   async isLoaded(): Promise<boolean> {
@@ -69,9 +76,10 @@ export class InventoryPage {
     await this.utils.clickElement(this.checkout);
   }
   async fillForm() {
-    await this.utils.fillInput(this.firstName, "Abdul");
-    await this.utils.fillInput(this.lastName, "Rehman");
-    await this.utils.fillInput(this.zipCode, "0099");
+    const userData = await this.dataGen.generateUserData();
+    await this.utils.fillInput(this.FirstName, userData.firstName);
+    await this.utils.fillInput(this.lastName, userData.firstName);
+    await this.utils.fillInput(this.zipCode, userData.zipCode);
     await this.utils.clickElement(this.continue);
   }
 

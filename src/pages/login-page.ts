@@ -23,6 +23,7 @@ export class LoginPage {
     await this.utils.fillInput(this.usernameInput, username);
     await this.utils.fillInput(this.passwordInput, password);
     await this.utils.clickElement(this.loginButton);
+    await this.page.context().storageState({path: 'auth.json'});
   }
 
   async getErrorMessage(): Promise<string> {

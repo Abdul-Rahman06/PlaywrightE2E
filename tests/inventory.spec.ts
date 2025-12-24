@@ -1,13 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from '../src/pages/login-page';
 import { InventoryPage } from '../src/pages/inventory-page';
-import { testUsers } from '../src/data/test-users';
 
 test.describe('SauceDemo Inventory Actions', () => {
   test.beforeEach(async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.goto('/');
-    await loginPage.login(testUsers.standard.username, testUsers.standard.password);
+    await page.goto('/inventory.html');
   });
 
   test('should add an item to the cart', async ({ page }) => {
