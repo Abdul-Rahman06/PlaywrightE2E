@@ -1,6 +1,6 @@
-# Playwright TestNG Framework by Abdul Rahman - Senior Test Engineer.
+# Playwright + Cucumber BDD Framework by Abdul Rahman - Senior Test Engineer.
 
-A comprehensive End-to-End test automation framework using Playwright with TestNG framework model and Page Object Model (POM) design pattern.
+A comprehensive End-to-End CI/CD ready test automation framework using Playwright with Page Object Model (POM) design pattern and Cucumber BDD
 Test Website used = https://www.saucedemo.com/
 
 ## 🚀 Features
