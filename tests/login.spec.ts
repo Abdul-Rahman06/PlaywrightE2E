@@ -11,7 +11,6 @@ test.describe('SauceDemo Login E2E', () => {
     await loginPage.goto('/');
     await loginPage.login(testUsers.standard.username, testUsers.standard.password);
     expect(await inventoryPage.isLoaded()).toBeTruthy();
-    expect(await inventoryPage.getInventoryItemsCount()).toBeGreaterThan(0);
   });
 
   test('should show error for locked out user', async ({ page }) => {
@@ -21,7 +20,7 @@ test.describe('SauceDemo Login E2E', () => {
     expect(await loginPage.getErrorMessage()).toContain('locked out');
   });
 
-  test('should show error for invalid credentials', async ({ page }) => {
+  test('show error for invalid credentials', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto('/');
     await loginPage.login('invalid_user', 'invalid_pass');

@@ -48,7 +48,11 @@
     "portfolio:demo": "npm run demo",
     "portfolio:showcase": "npm run showcase",
     "portfolio:test": "npm run test:chrome && npm run test:report:current",
-    "portfolio:full": "npm run test && npm run test:report:current"
+    "portfolio:full": "npm run test && npm run test:report:current",
+    "allure:generate": "allure generate ./allure-results -o ./allure-report --clean",
+    "allure:open": "allure open ./allure-report",
+    "test:report:allure": "npm run allure:generate && npm run allure:open",
+    "test:cucumber": "playwright test --cucumber"
   },
   "keywords": [
     "playwright",
@@ -70,8 +74,10 @@
   "license": "MIT",
   "devDependencies": {
     "@faker-js/faker": "^10.1.0",
-    "@playwright/test": "^1.40.0",
+    "@playwright/test": "^1.57.0",
     "@types/node": "^20.10.0",
+    "allure-commandline": "^2.27.0",
+    "allure-playwright": "^3.4.3",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.0.1",
@@ -79,9 +85,11 @@
     "typescript": "^5.3.0"
   },
   "dependencies": {
+    "@cucumber/cucumber": "^12.5.0",
     "axios": "^1.6.0",
     "dotenv": "^16.3.1",
     "moment": "^2.29.4",
+    "playwright": "^1.57.0",
     "winston": "^3.11.0"
   },
   "engines": {

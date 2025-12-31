@@ -65,14 +65,24 @@ test.describe('SauceDemo Inventory Actions', () => {
   test('Should be able to sort in ascending order', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.sortPageAsc();
-    await inventoryPage.sortPageDesc();
-    await inventoryPage.sortPageHightoLow();
-    await inventoryPage.sortPageLowtoHigh();
+    
   });
 
-  test('Should be able to sort in descending order', async ({ page }) => {
+   test('Should be able to sort in descending order', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.sortPageDesc();
+  });
+
+    test('Should be able to sort in high to low price order', async ({ page }) => {
+    const inventoryPage = new InventoryPage(page);
+    await inventoryPage.sortPageHightoLow();
+    
+  });
+  
+   test('Should be able to sort in low to high price order', async ({ page }) => {
+    const inventoryPage = new InventoryPage(page);
+    await inventoryPage.sortPageLowtoHigh();
+    
   });
 
   test("Should be able to checkout the order", async  ({page}) => {

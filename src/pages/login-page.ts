@@ -7,7 +7,7 @@ export class LoginPage {
 
   private usernameInput = '#user-name';
   private passwordInput = '#password';
-  private loginButton = '#login-button';
+  public loginButton = '#login-button';
   private errorMessage = '[data-test="error"]';
 
   constructor(page: Page) {
@@ -23,10 +23,10 @@ export class LoginPage {
     await this.utils.fillInput(this.usernameInput, username);
     await this.utils.fillInput(this.passwordInput, password);
     await this.utils.clickElement(this.loginButton);
-    await this.page.context().storageState({path: 'auth.json'});
   }
 
   async getErrorMessage(): Promise<string> {
-    return this.utils.getText(this.errorMessage);
+    await this.page.locator(this.errorMessage).waitFor({state: 'visible'});
+    return await this.page.locator(this.errorMessage).textContent()?? '';
   }
 }  

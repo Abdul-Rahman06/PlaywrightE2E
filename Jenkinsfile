@@ -62,6 +62,32 @@ pipeline {
                 }
             }
         }
+        stage('Cucumber Tests') {
+            steps {
+                script {
+                    dir('Playwright-Cucumber') {
+                        nodejs(nodeJSInstallationName: 'NodeJS-18') {
+                            sh 'npm ci'
+                            sh 'npm test'
+                            sh 'npm run report'
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'Playwright-Cucumber/reports/**/*', fingerprint: true
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'Playwright-Cucumber/reports',
+                        reportFiles: 'cucumber-report.html',
+                        reportName: 'Cucumber Test Report'
+                    ])
+                }
+            }
+        }
         
         stage('Run Tests') {
             parallel {
@@ -177,6 +203,7 @@ pipeline {
                 }
             }
         }
+        
     }
     
     post {

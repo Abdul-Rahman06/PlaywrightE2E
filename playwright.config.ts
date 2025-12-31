@@ -16,6 +16,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
+    ['allure-playwright', { outputFolder: 'allure-results' }],
     ['html', { outputFolder: './reports/current/html-report' }],
     ['json', { outputFile: './reports/current/results.json' }],
     ['junit', { outputFile: './reports/current/junit.xml' }],
@@ -129,6 +130,8 @@ export default defineConfig({
   //   url: 'http://127.0.0.1:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
+
+
 
   /* Global setup and teardown */
   globalSetup: require.resolve('./config/global-setup.ts'),

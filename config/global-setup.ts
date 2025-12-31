@@ -36,4 +36,4 @@ async function globalSetup(config: FullConfig) {
   }
 }
 
-export default globalSetup; 
+export default globalSetup;

@@ -14,6 +14,8 @@ reports/current/*
 !reports/current/.gitkeep
 reports/archive/*
 !reports/archive/.gitkeep
+allure-results/*
+!allure-results/.gitkeep
 
 # Environment variables
 .env
@@ -175,5 +177,11 @@ temp-reports/
 config/local.json
 config/dev.json 
 
-#Env files
-.env.example
+# Cucumber
+Playwright-Cucumber/reports/
+
+# Generated Auth
+auth.json
+
+# Allure
+allure-report/

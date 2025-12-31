@@ -145,6 +145,13 @@ npm run test:parallel
 npm run test:retry
 ```
 
+### Cucumber Tests
+
+```bash
+# Run Cucumber tests (located in Playwright-Cucumber directory)
+npm run test:cucumber
+```
+
 ### API Testing
 
 ```bash
@@ -227,7 +234,8 @@ The framework includes a Jenkins pipeline with:
 - ✅ Parallel test execution
 - ✅ HTML and JUnit report publishing
 - ✅ Artifact archiving
-- ✅ Workspace cleanup
+- ✅ Check workspace cleanup
+- ✅ Cucumber Test integration and reporting
 
 **Setup:**
 1. Install required Jenkins plugins:
