@@ -1,4 +1,4 @@
-# Playwright + Cucumber BDD Framework by Abdul Rahman - Senior Test Engineer.
+# Playwright-TS + Cucumber BDD Framework by Abdul Rahman - Senior Test Engineer.
 
 A comprehensive End-to-End CI/CD ready test automation framework using Playwright with Page Object Model (POM) design pattern and Cucumber BDD
 Test Website used = https://www.saucedemo.com/
